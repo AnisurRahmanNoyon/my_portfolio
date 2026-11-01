@@ -1,0 +1,1489 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anisur Rahman Noyon Sarker | Portfolio & Interactive CV</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        accent: {
+                            400: 'var(--accent-400)',
+                            500: 'var(--accent-500)',
+                            600: 'var(--accent-600)',
+                            glow: 'var(--accent-glow)'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* CSS Theme Custom Variables */
+        :root[data-theme="cyberpunk"] {
+            --accent-400: #38bdf8;
+            --accent-500: #06b6d4;
+            --accent-600: #0284c7;
+            --accent-rgb: 6, 182, 212;
+            --accent-glow: rgba(6, 182, 212, 0.4);
+            --bg-mesh-1: rgba(6, 182, 212, 0.15);
+            --bg-mesh-2: rgba(99, 102, 241, 0.15);
+        }
+        :root[data-theme="emerald"] {
+            --accent-400: #34d399;
+            --accent-500: #10b981;
+            --accent-600: #059669;
+            --accent-rgb: 16, 185, 129;
+            --accent-glow: rgba(16, 185, 129, 0.4);
+            --bg-mesh-1: rgba(16, 185, 129, 0.15);
+            --bg-mesh-2: rgba(20, 184, 166, 0.15);
+        }
+        :root[data-theme="sunset"] {
+            --accent-400: #fbbf24;
+            --accent-500: #f59e0b;
+            --accent-600: #d97706;
+            --accent-rgb: 245, 158, 11;
+            --accent-glow: rgba(245, 158, 11, 0.4);
+            --bg-mesh-1: rgba(245, 158, 11, 0.15);
+            --bg-mesh-2: rgba(239, 68, 68, 0.15);
+        }
+        :root[data-theme="violet"] {
+            --accent-400: #c084fc;
+            --accent-500: #a855f7;
+            --accent-600: #9333ea;
+            --accent-rgb: 168, 85, 247;
+            --accent-glow: rgba(168, 85, 247, 0.4);
+            --bg-mesh-1: rgba(168, 85, 247, 0.15);
+            --bg-mesh-2: rgba(236, 72, 153, 0.15);
+        }
+
+        body {
+            background-color: #070a12;
+            color: #f1f5f9;
+            transition: background-color 4s cubic-bezier(0.25, 1, 0.5, 1), color 4s cubic-bezier(0.25, 1, 0.5, 1);
+            min-height: 100vh;
+        }
+
+        /* Canvas Particle Background */
+        #bg-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Dynamic Mesh Background Glow */
+        .mesh-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: -1;
+            background: 
+                radial-gradient(circle at 20% 25%, var(--bg-mesh-1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 75%, var(--bg-mesh-2) 0%, transparent 50%);
+            transition: background 4s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        /* Glassmorphism Cards with HUD Corners */
+        .glass-card {
+            background: rgba(13, 20, 36, 0.75);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            position: relative;
+            transition: border-color 4s cubic-bezier(0.25, 1, 0.5, 1), 
+                        box-shadow 4s cubic-bezier(0.25, 1, 0.5, 1),
+                        background-color 4s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        .glass-card:hover {
+            border-color: var(--accent-500);
+            box-shadow: 0 20px 40px -12px var(--accent-glow);
+        }
+
+        /* HUD Tech Corner Brackets */
+        .glass-card::before, .glass-card::after {
+            content: '';
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            border-color: var(--accent-400);
+            border-style: solid;
+            pointer-events: none;
+            opacity: 0.6;
+            transition: border-color 4s ease;
+        }
+        .glass-card::before {
+            top: 6px;
+            left: 6px;
+            border-width: 1.5px 0 0 1.5px;
+        }
+        .glass-card::after {
+            bottom: 6px;
+            right: 6px;
+            border-width: 0 1.5px 1.5px 0;
+        }
+
+        /* Profile Card Specific 3D Tilt Settings */
+        #parallax-card {
+            transform-style: preserve-3d;
+            perspective: 1000px;
+            transition: transform 0.1s ease-out;
+            will-change: transform;
+        }
+
+        /* Light Sweep Effect on Profile Card */
+        @keyframes lightSweep {
+            0% { transform: translateX(-100%) rotate(45deg); }
+            100% { transform: translateX(200%) rotate(45deg); }
+        }
+        .light-sweep-container {
+            position: relative;
+        }
+        .light-sweep-container::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(255, 255, 255, 0.08),
+                transparent
+            );
+            transform: translateX(-100%) rotate(45deg);
+            animation: lightSweep 6s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        /* ========================================================= */
+        /* UNIQUE SIGNATURE SECTION TRANSITIONS                      */
+        /* ========================================================= */
+        .page-view {
+            display: none;
+            opacity: 0;
+            will-change: opacity, transform, filter;
+        }
+
+        .page-view.active-page {
+            display: block;
+        }
+
+        /* Home Section: Kinetic Stagger */
+        @keyframes homeEntry {
+            0% { opacity: 0; transform: translateY(18px) scale(0.98); filter: blur(4px); }
+            100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+        }
+        #page-home.page-visible {
+            animation: homeEntry 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        /* About Section: Cinematic Zoom & Dissolve */
+        @keyframes aboutZoom {
+            0% { opacity: 0; transform: scale(0.93); filter: blur(8px); }
+            100% { opacity: 1; transform: scale(1); filter: blur(0); }
+        }
+        #page-about.page-visible {
+            animation: aboutZoom 0.45s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+        }
+
+        /* Skills Section: Cyber Scan Horizontal Slide */
+        @keyframes skillsSlide {
+            0% { opacity: 0; transform: translateX(-35px); filter: blur(5px); }
+            100% { opacity: 1; transform: translateX(0); filter: blur(0); }
+        }
+        #page-skills.page-visible {
+            animation: skillsSlide 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        /* Projects Section: Matrix Gallery Spring Pop */
+        @keyframes projectsPop {
+            0% { opacity: 0; transform: translateY(24px) scale(0.96); filter: blur(4px); }
+            100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+        }
+        #page-projects.page-visible {
+            animation: projectsPop 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+
+        /* Resume Section: 3D Perspective Flip Unfold */
+        @keyframes resumeFlip {
+            0% { opacity: 0; transform: perspective(1000px) rotateX(12deg) translateY(20px); filter: blur(5px); }
+            100% { opacity: 1; transform: perspective(1000px) rotateX(0deg) translateY(0); filter: blur(0); }
+        }
+        #page-resume.page-visible {
+            animation: resumeFlip 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        /* Languages Section: Minimalist Pulse Radial Expand */
+        @keyframes languagesPulse {
+            0% { opacity: 0; transform: scale(0.95); filter: blur(4px); }
+            100% { opacity: 1; transform: scale(1); filter: blur(0); }
+        }
+        #page-languages.page-visible {
+            animation: languagesPulse 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        /* Contact Section: Focus Snap Rise */
+        @keyframes contactRise {
+            0% { opacity: 0; transform: translateY(26px); filter: blur(5px); }
+            100% { opacity: 1; transform: translateY(0); filter: blur(0); }
+        }
+        #page-contact.page-visible {
+            animation: contactRise 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        /* Home Sequenced Element Reveal */
+        @keyframes seqReveal {
+            0% { opacity: 0; transform: translateY(16px); filter: blur(3px); }
+            100% { opacity: 1; transform: translateY(0); filter: blur(0); }
+        }
+        .seq-step-1 { animation: seqReveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.05s forwards; opacity: 0; }
+        .seq-step-2 { animation: seqReveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.2s forwards; opacity: 0; }
+        .seq-step-3 { animation: seqReveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.35s forwards; opacity: 0; }
+        .seq-step-4 { animation: seqReveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.5s forwards; opacity: 0; }
+        .seq-step-5 { animation: seqReveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.65s forwards; opacity: 0; }
+
+        /* Mobile Slide Drawer Animation */
+        #mobile-menu {
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            transform: translateY(-8px);
+            transition: max-height 0.4s cubic-bezier(0.16, 1, 0.3, 1), 
+                        opacity 0.35s ease, 
+                        transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+                        padding 0.35s ease;
+        }
+
+        #mobile-menu.menu-open {
+            max-height: 420px;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .nav-btn {
+            transition: background-color 4s cubic-bezier(0.25, 1, 0.5, 1), 
+                        color 4s cubic-bezier(0.25, 1, 0.5, 1), 
+                        box-shadow 4s cubic-bezier(0.25, 1, 0.5, 1),
+                        border-color 4s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+        .nav-btn.active-nav {
+            background-color: var(--accent-500);
+            color: #070a12 !important;
+            font-weight: 700;
+            box-shadow: 0 0 18px var(--accent-glow);
+        }
+
+        .theme-trans {
+            transition: background-color 4s cubic-bezier(0.25, 1, 0.5, 1),
+                        color 4s cubic-bezier(0.25, 1, 0.5, 1),
+                        border-color 4s cubic-bezier(0.25, 1, 0.5, 1),
+                        box-shadow 4s cubic-bezier(0.25, 1, 0.5, 1),
+                        fill 4s cubic-bezier(0.25, 1, 0.5, 1),
+                        stroke 4s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        @media print {
+            body { background: #ffffff !important; color: #000000 !important; }
+            #bg-canvas, .mesh-bg, header, footer, #toast, .no-print { display: none !important; }
+            .page-view { display: none !important; }
+            #page-resume { display: block !important; opacity: 1 !important; transform: none !important; filter: none !important; }
+        }
+
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #060911; }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 4px;
+            transition: background 4s ease;
+        }
+        ::-webkit-scrollbar-thumb:hover { background: var(--accent-500); }
+    </style>
+</head>
+<body data-theme="cyberpunk" class="font-sans antialiased overflow-x-hidden selection:bg-accent-500 selection:text-slate-950 flex flex-col min-h-screen theme-trans">
+
+    <!-- Interactive Canvas Particle Background -->
+    <canvas id="bg-canvas"></canvas>
+
+    <!-- Dynamic Mesh Radial Background -->
+    <div class="mesh-bg"></div>
+
+    <!-- Toast Notification Popup -->
+    <div id="toast" class="fixed bottom-6 right-6 z-50 px-5 py-3.5 rounded-2xl bg-slate-900/95 border border-slate-700/80 text-slate-100 text-xs font-medium shadow-2xl flex items-center gap-3 translate-y-12 opacity-0 pointer-events-none transition-all duration-300">
+        <i class="fa-solid fa-circle-check text-accent-400 text-base theme-trans"></i>
+        <span id="toast-msg">Action performed!</span>
+    </div>
+
+    <!-- Top Navigation Header -->
+    <header class="fixed top-0 left-0 w-full z-40 bg-slate-950/80 backdrop-blur-xl border-b border-slate-800/70 theme-trans">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
+            
+            <!-- Brand Badge -->
+            <button onclick="switchPage('home')" class="flex items-center gap-3 group text-left shrink-0">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-accent-600 to-accent-400 flex items-center justify-center text-slate-950 font-extrabold text-lg shadow-lg shadow-accent-500/20 group-hover:scale-105 transition-all theme-trans">
+                    AR
+                </div>
+                <div class="flex flex-col hidden sm:flex">
+                    <span class="font-bold text-white tracking-tight text-base group-hover:text-accent-400 transition-colors theme-trans">Anisur Rahman</span>
+                    <span class="text-[10px] text-slate-400 font-mono tracking-widest uppercase">Noyon Sarker</span>
+                </div>
+            </button>
+
+            <!-- Navigation Links -->
+            <nav class="hidden xl:flex items-center gap-1 bg-slate-900/90 p-1.5 rounded-full border border-slate-800/80 theme-trans">
+                <button onclick="switchPage('home')" id="nav-home" class="nav-btn active-nav px-4 py-2 text-xs font-semibold text-slate-300 hover:text-white rounded-full transition-all">Home</button>
+                <button onclick="scrollToAbout()" id="nav-about" class="nav-btn px-4 py-2 text-xs font-semibold text-slate-300 hover:text-white rounded-full transition-all">About</button>
+                <button onclick="switchPage('skills')" id="nav-skills" class="nav-btn px-4 py-2 text-xs font-semibold text-slate-300 hover:text-white rounded-full transition-all">Skills</button>
+                <button onclick="switchPage('projects')" id="nav-projects" class="nav-btn px-4 py-2 text-xs font-semibold text-slate-300 hover:text-white rounded-full transition-all">Projects</button>
+                <button onclick="switchPage('languages')" id="nav-languages" class="nav-btn px-4 py-2 text-xs font-semibold text-slate-300 hover:text-white rounded-full transition-all">Languages</button>
+                <button onclick="switchPage('contact')" id="nav-contact" class="nav-btn px-4 py-2 text-xs font-semibold text-slate-300 hover:text-white rounded-full transition-all">Contact</button>
+            </nav>
+
+            <!-- Header Actions -->
+            <div class="flex items-center gap-2 sm:gap-3 shrink-0">
+                <button onclick="switchPage('resume')" id="nav-resume" class="nav-btn px-3.5 py-2.5 sm:px-4 sm:py-2.5 rounded-xl bg-gradient-to-r from-accent-600 to-accent-500 text-slate-950 font-bold text-xs shadow-lg shadow-accent-500/20 hover:scale-105 transition-all flex items-center gap-2 border border-accent-400/30">
+                    <i class="fa-solid fa-file-invoice text-sm"></i>
+                    <span class="tracking-wide uppercase font-extrabold text-[11px] sm:text-xs">CV / Resume</span>
+                </button>
+
+                <div class="relative">
+                    <button id="theme-btn" class="p-2.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 hover:text-accent-400 hover:border-slate-700 transition-all flex items-center gap-2 text-xs font-semibold theme-trans">
+                        <i class="fa-solid fa-palette text-sm text-accent-400 theme-trans"></i>
+                        <span class="hidden md:inline">Theme</span>
+                    </button>
+                    <div id="theme-menu" class="hidden absolute right-0 mt-2 w-48 bg-slate-900/95 border border-slate-800 rounded-2xl p-2 shadow-2xl backdrop-blur-xl flex flex-col gap-1 z-50 theme-trans">
+                        <button onclick="setTheme('cyberpunk')" class="px-3 py-2 rounded-xl text-xs text-left text-slate-300 hover:bg-slate-800 hover:text-white flex items-center gap-2.5">
+                            <span class="w-3.5 h-3.5 rounded-full bg-cyan-400"></span> Cyberpunk Teal
+                        </button>
+                        <button onclick="setTheme('emerald')" class="px-3 py-2 rounded-xl text-xs text-left text-slate-300 hover:bg-slate-800 hover:text-white flex items-center gap-2.5">
+                            <span class="w-3.5 h-3.5 rounded-full bg-emerald-400"></span> Emerald Green
+                        </button>
+                        <button onclick="setTheme('sunset')" class="px-3 py-2 rounded-xl text-xs text-left text-slate-300 hover:bg-slate-800 hover:text-white flex items-center gap-2.5">
+                            <span class="w-3.5 h-3.5 rounded-full bg-amber-400"></span> Sunset Gold
+                        </button>
+                        <button onclick="setTheme('violet')" class="px-3 py-2 rounded-xl text-xs text-left text-slate-300 hover:bg-slate-800 hover:text-white flex items-center gap-2.5">
+                            <span class="w-3.5 h-3.5 rounded-full bg-purple-400"></span> Electric Violet
+                        </button>
+                    </div>
+                </div>
+
+                <button id="mobile-toggle" class="xl:hidden p-2.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 theme-trans">
+                    <i class="fa-solid fa-bars text-lg"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Drawer -->
+        <div id="mobile-menu" class="xl:hidden bg-slate-950/95 border-b border-slate-800 px-6 py-0 flex flex-col gap-2 theme-trans">
+            <button onclick="switchPage('home')" class="mobile-link text-left py-2 text-sm font-medium text-slate-300 hover:text-accent-400 theme-trans">Home</button>
+            <button onclick="scrollToAbout()" class="mobile-link text-left py-2 text-sm font-medium text-slate-300 hover:text-accent-400 theme-trans">About Me</button>
+            <button onclick="switchPage('skills')" class="mobile-link text-left py-2 text-sm font-medium text-slate-300 hover:text-accent-400 theme-trans">Skills</button>
+            <button onclick="switchPage('projects')" class="mobile-link text-left py-2 text-sm font-medium text-slate-300 hover:text-accent-400 theme-trans">Projects</button>
+            <button onclick="switchPage('resume')" class="mobile-link text-left py-2 text-sm font-medium text-accent-400 font-bold flex items-center gap-2 theme-trans">
+                <i class="fa-solid fa-file-invoice text-xs"></i>
+                <span>CV / Resume</span>
+            </button>
+            <button onclick="switchPage('languages')" class="mobile-link text-left py-2 text-sm font-medium text-slate-300 hover:text-accent-400 theme-trans">Languages</button>
+            <button onclick="switchPage('contact')" class="mobile-link text-left py-2 text-sm font-medium text-slate-300 hover:text-accent-400 theme-trans">Contact</button>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="relative z-10 pt-28 pb-16 flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full min-h-[75vh]">
+
+        <!-- PAGE 1: HOME / HERO -->
+        <div id="page-home" class="page-view active-page page-visible">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center min-h-[70vh]">
+                
+                <!-- Left Text Column with Sequenced Steps -->
+                <div class="lg:col-span-7 flex flex-col gap-6 text-left">
+                    
+                    <!-- Step 1: Role Badge -->
+                    <div class="seq-step-1 inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-slate-900/90 border border-slate-800 text-accent-400 text-xs font-mono w-fit theme-trans">
+                        <span class="w-2.5 h-2.5 rounded-full bg-accent-400 animate-ping theme-trans"></span>
+                        <span>Creative Technologist · Video · Design · Python</span>
+                    </div>
+
+                    <!-- Step 2: Name Title -->
+                    <h1 class="seq-step-2 text-4xl sm:text-6xl font-extrabold tracking-tight text-white leading-tight">
+                        Anisur Rahman <br>
+                        <span class="bg-gradient-to-r from-accent-400 via-accent-500 to-indigo-300 bg-clip-text text-transparent theme-trans">Noyon Sarker</span>
+                    </h1>
+
+                    <!-- Step 3: Stronger Personal Statement -->
+                    <p class="seq-step-3 text-slate-400 text-base sm:text-lg leading-relaxed max-w-2xl">
+                        I turn raw footage into stories that hold attention, and turn code into systems that protect data. 
+                        With <span class="text-accent-400 font-medium theme-trans">5+ years</span> in video post-production and a growing focus on Python, web interfaces, and blockchain forensics, I work at the intersection of visual craft and technical problem-solving.
+                    </p>
+
+                    <!-- Step 4: Contact + Social Pills -->
+                    <div class="seq-step-4 flex flex-wrap gap-3 pt-2">
+                        <button onclick="copyText('+8801886614411')" class="px-4 py-2.5 rounded-xl bg-slate-900/90 border border-slate-800/80 hover:border-accent-500 text-slate-300 text-xs font-mono flex items-center gap-2.5 transition-all group theme-trans">
+                            <i class="fa-solid fa-phone text-accent-400 group-hover:scale-110 transition-transform theme-trans"></i>
+                            <span>+8801886614411</span>
+                            <i class="fa-regular fa-copy text-[10px] text-slate-500"></i>
+                        </button>
+                        <button onclick="copyText('anisurrahmannoyon19072@gmail.com')" class="px-4 py-2.5 rounded-xl bg-slate-900/90 border border-slate-800/80 hover:border-accent-500 text-slate-300 text-xs font-mono flex items-center gap-2.5 transition-all group theme-trans">
+                            <i class="fa-solid fa-envelope text-accent-400 group-hover:scale-110 transition-transform theme-trans"></i>
+                            <span>Email</span>
+                            <i class="fa-regular fa-copy text-[10px] text-slate-500"></i>
+                        </button>
+                        <div class="px-4 py-2.5 rounded-xl bg-slate-900/90 border border-slate-800/80 text-slate-300 text-xs font-mono flex items-center gap-2 theme-trans">
+                            <i class="fa-solid fa-location-dot text-accent-400 theme-trans"></i>
+                            <span>Dhaka, Bangladesh</span>
+                        </div>
+                    </div>
+
+                    <!-- Social Links -->
+                    <div class="seq-step-4 flex items-center gap-3 pt-1">
+                        <a href="https://www.linkedin.com/in/anisur-rahman-noyon-sarker-4254803bb" target="_blank" rel="noopener noreferrer" class="w-10 h-10 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 hover:text-accent-400 hover:border-accent-500 transition-all theme-trans" title="LinkedIn">
+                            <i class="fa-brands fa-linkedin-in"></i>
+                        </a>
+                        <a href="https://github.com/AnisurRahmanNoyon" target="_blank" rel="noopener noreferrer" class="w-10 h-10 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 hover:text-accent-400 hover:border-accent-500 transition-all theme-trans" title="GitHub">
+                            <i class="fa-brands fa-github"></i>
+                        </a>
+                        <a href="https://www.youtube.com/@infamegamin" target="_blank" rel="noopener noreferrer" class="w-10 h-10 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 hover:text-accent-400 hover:border-accent-500 transition-all theme-trans" title="YouTube">
+                            <i class="fa-brands fa-youtube"></i>
+                        </a>
+                    </div>
+
+                    <!-- Step 5: Action Buttons -->
+                    <div class="seq-step-5 flex flex-wrap items-center gap-4 pt-3">
+                        <button onclick="switchPage('projects')" class="px-8 py-3.5 rounded-xl bg-gradient-to-r from-accent-600 to-accent-500 text-slate-950 font-bold text-xs uppercase tracking-wider shadow-xl shadow-accent-500/25 hover:scale-105 transition-all flex items-center gap-3 theme-trans">
+                            <span>Explore Portfolio</span>
+                            <i class="fa-solid fa-arrow-right text-xs"></i>
+                        </button>
+                        <button onclick="scrollToAbout()" class="px-8 py-3.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-200 border border-slate-800 font-bold text-xs uppercase tracking-wider transition-all flex items-center gap-3 theme-trans">
+                            <i class="fa-solid fa-user text-accent-400 theme-trans"></i>
+                            <span>My Story</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Right Profile Card (3D Tilt Active & Sequenced First) -->
+                <div class="lg:col-span-5 flex justify-center">
+                    <div id="parallax-card" class="glass-card light-sweep-container w-full max-w-sm rounded-3xl p-6 flex flex-col items-center text-center gap-6 seq-step-1">
+                        
+                        <div class="relative w-44 h-44 rounded-2xl p-1 bg-gradient-to-tr from-accent-500 via-indigo-500 to-purple-500 shadow-xl shadow-accent-500/20 theme-trans">
+                            <div class="w-full h-full bg-slate-950 rounded-xl overflow-hidden flex items-center justify-center theme-trans">
+                                <img src="https://lh3.googleusercontent.com/d/1Zs_3h-twYEgJF-VCXKu0E6fDZBycTaLT" 
+                                     alt="Anisur Rahman Noyon Sarker" 
+                                     class="w-full h-full object-cover"
+                                     onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                <!-- Fallback initials if the image fails to load -->
+                                <div class="w-full h-full hidden items-center justify-center bg-gradient-to-br from-accent-600 to-accent-400 text-slate-950 font-extrabold text-5xl tracking-tight select-none theme-trans">
+                                    AR
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h3 class="font-extrabold text-xl text-white">Anisur Rahman Noyon</h3>
+                            <p class="text-xs font-mono text-accent-400 mt-1 theme-trans">Video Editor & Python Developer</p>
+                        </div>
+
+                        <div class="w-full grid grid-cols-2 gap-3 pt-2 border-t border-slate-800/80">
+                            <div class="p-3 rounded-2xl bg-slate-900/80 border border-slate-800/80 text-center theme-trans">
+                                <span class="block text-xl font-bold text-white">5+ Years</span>
+                                <span class="text-[10px] text-slate-400 font-mono">Editing & Design</span>
+                            </div>
+                            <div class="p-3 rounded-2xl bg-slate-900/80 border border-slate-800/80 text-center theme-trans">
+                                <span class="block text-xl font-bold text-white">Multi-Tool</span>
+                                <span class="text-[10px] text-slate-400 font-mono">Creative & Tech</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- ABOUT SECTION (same page, scrolls below hero) -->
+            <div id="about-section" class="pt-24 mt-8 border-t border-slate-800/60">
+                <div class="text-center max-w-2xl mx-auto mb-12">
+                    <span class="text-xs font-mono text-accent-400 tracking-widest uppercase theme-trans">The Person Behind the Work</span>
+                    <h2 class="text-3xl font-extrabold text-white mt-1">About Me</h2>
+                    <div class="w-12 h-1 bg-accent-500 mx-auto mt-3 rounded-full theme-trans"></div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                    <div class="lg:col-span-8 glass-card rounded-3xl p-8 sm:p-10 flex flex-col gap-6">
+                        <h3 class="text-xl font-bold text-white flex items-center gap-3">
+                            <i class="fa-solid fa-quote-left text-accent-400 theme-trans"></i>
+                            <span>I like building things that look good and actually work.</span>
+                        </h3>
+                        
+                        <div class="space-y-4 text-sm text-slate-300 leading-relaxed">
+                            <p>
+                                I'm <strong class="text-white">Anisur Rahman Noyon Sarker</strong> from Dhaka, Bangladesh. For more than five years I've spent most of my days cutting footage, designing motion, and crafting the small visual details that make a video feel intentional. What started with KineMaster on a phone gradually became Filmora, then Adobe Premiere Pro — and the same curiosity that made me chase better edits also pulled me into code.
+                            </p>
+                            <p>
+                                On the technical side I write Python, build responsive interfaces, and explore how blockchain can lock evidence so it can't be quietly altered. My most meaningful technical work so far is a <strong class="text-white">Blockchain Forensic Image Preservation Framework</strong> — a system that combines deep-learning classification with smart contracts to keep forensic images verifiable.
+                            </p>
+                            <p>
+                                I don't see creative work and engineering as separate careers. The same instinct that tells me when a cut is too long also tells me when a function is doing too much. That overlap is where I prefer to live.
+                            </p>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 border-t border-slate-800/80">
+                            <div class="p-4 rounded-2xl bg-slate-900/60 border border-slate-800/80">
+                                <h4 class="font-bold text-xs uppercase tracking-wider mb-1 text-accent-400 theme-trans">What I Care About</h4>
+                                <p class="text-xs text-slate-400">Clean storytelling, reliable systems, and interfaces that feel effortless.</p>
+                            </div>
+                            <div class="p-4 rounded-2xl bg-slate-900/60 border border-slate-800/80">
+                                <h4 class="font-bold text-xs uppercase tracking-wider mb-1 text-accent-400 theme-trans">How I Work</h4>
+                                <p class="text-xs text-slate-400">Iterate fast, listen carefully, and ship things people can actually use.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="lg:col-span-4 flex flex-col gap-6">
+                        <div class="glass-card rounded-3xl p-6 flex flex-col gap-4">
+                            <h4 class="font-bold text-white text-sm flex items-center gap-2">
+                                <i class="fa-solid fa-heart text-accent-400 theme-trans"></i>
+                                <span>Outside the Screen</span>
+                            </h4>
+                            <ul class="text-xs text-slate-300 flex flex-col gap-3 font-mono">
+                                <li class="flex items-start gap-2.5">
+                                    <i class="fa-solid fa-motorcycle text-accent-400 mt-0.5 theme-trans"></i>
+                                    <span>Motorcycles, riding technique, and restoring project bikes.</span>
+                                </li>
+                                <li class="flex items-start gap-2.5">
+                                    <i class="fa-solid fa-gamepad text-accent-400 mt-0.5 theme-trans"></i>
+                                    <span>Sim racing, time attacks, and building better setups.</span>
+                                </li>
+                                <li class="flex items-start gap-2.5">
+                                    <i class="fa-solid fa-language text-accent-400 mt-0.5 theme-trans"></i>
+                                    <span>Languages — Bengali, English, and conversational Japanese.</span>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="glass-card rounded-3xl p-6 flex flex-col gap-4 text-center">
+                            <h4 class="font-bold text-white text-sm">Want to work together?</h4>
+                            <p class="text-xs text-slate-400">Whether it's a video series, a branding pack, or a small technical system — I'm open.</p>
+                            <button onclick="switchPage('contact')" class="w-full py-3 rounded-xl bg-accent-500 text-slate-950 font-bold text-xs uppercase tracking-wider hover:opacity-90 transition-all theme-trans">
+                                Get In Touch
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PAGE 3: SKILLS -->
+        <div id="page-skills" class="page-view">
+            <div class="text-center max-w-2xl mx-auto mb-12">
+                <span class="text-xs font-mono text-accent-400 tracking-widest uppercase theme-trans">Skillset</span>
+                <h2 class="text-3xl font-extrabold text-white mt-1">Technical & Creative Expertise</h2>
+                <div class="w-12 h-1 bg-accent-500 mx-auto mt-3 rounded-full theme-trans"></div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+                <!-- Programming & Tech -->
+                <div class="glass-card rounded-3xl p-6 flex flex-col gap-5">
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 rounded-2xl bg-slate-900 border border-slate-800 flex items-center justify-center text-accent-400 text-xl theme-trans">
+                            <i class="fa-solid fa-code"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-white text-lg">Programming & Tech</h3>
+                            <p class="text-[10px] text-slate-500 font-mono">Code · Systems · Research</p>
+                        </div>
+                    </div>
+
+                    <div class="space-y-3">
+                        <div>
+                            <div class="flex justify-between text-xs mb-1.5">
+                                <span class="text-slate-300 flex items-center gap-2"><i class="fa-brands fa-python text-accent-400"></i> Python</span>
+                                <span class="text-accent-400 font-mono">85%</span>
+                            </div>
+                            <div class="w-full h-2 rounded-full bg-slate-900 border border-slate-800 overflow-hidden">
+                                <div class="h-full bg-gradient-to-r from-accent-600 to-accent-400 rounded-full theme-trans" style="width:85%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-xs mb-1.5">
+                                <span class="text-slate-300 flex items-center gap-2"><i class="fa-solid fa-link text-accent-400"></i> Blockchain / Smart Contracts</span>
+                                <span class="text-accent-400 font-mono">70%</span>
+                            </div>
+                            <div class="w-full h-2 rounded-full bg-slate-900 border border-slate-800 overflow-hidden">
+                                <div class="h-full bg-gradient-to-r from-accent-600 to-accent-400 rounded-full theme-trans" style="width:70%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-xs mb-1.5">
+                                <span class="text-slate-300 flex items-center gap-2"><i class="fa-brands fa-html5 text-accent-400"></i> Front-End (HTML/CSS/JS)</span>
+                                <span class="text-accent-400 font-mono">80%</span>
+                            </div>
+                            <div class="w-full h-2 rounded-full bg-slate-900 border border-slate-800 overflow-hidden">
+                                <div class="h-full bg-gradient-to-r from-accent-600 to-accent-400 rounded-full theme-trans" style="width:80%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-xs mb-1.5">
+                                <span class="text-slate-300 flex items-center gap-2"><i class="fa-solid fa-brain text-accent-400"></i> Deep Learning Integration</span>
+                                <span class="text-accent-400 font-mono">65%</span>
+                            </div>
+                            <div class="w-full h-2 rounded-full bg-slate-900 border border-slate-800 overflow-hidden">
+                                <div class="h-full bg-gradient-to-r from-accent-600 to-accent-400 rounded-full theme-trans" style="width:65%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Video Post-Production -->
+                <div class="glass-card rounded-3xl p-6 flex flex-col gap-5">
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 rounded-2xl bg-slate-900 border border-slate-800 flex items-center justify-center text-accent-400 text-xl theme-trans">
+                            <i class="fa-solid fa-film"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-white text-lg">Video Post-Production</h3>
+                            <p class="text-[10px] text-slate-500 font-mono">5+ Years Experience</p>
+                        </div>
+                    </div>
+
+                    <div class="space-y-3">
+                        <div>
+                            <div class="flex justify-between text-xs mb-1.5">
+                                <span class="text-slate-300 flex items-center gap-2"><i class="fa-solid fa-clapperboard text-accent-400"></i> Adobe Premiere Pro</span>
+                                <span class="text-accent-400 font-mono">90%</span>
+                            </div>
+                            <div class="w-full h-2 rounded-full bg-slate-900 border border-slate-800 overflow-hidden">
+                                <div class="h-full bg-gradient-to-r from-accent-600 to-accent-400 rounded-full theme-trans" style="width:90%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-xs mb-1.5">
+                                <span class="text-slate-300 flex items-center gap-2"><i class="fa-solid fa-video text-accent-400"></i> Filmora 9</span>
+                                <span class="text-accent-400 font-mono">95%</span>
+                            </div>
+                            <div class="w-full h-2 rounded-full bg-slate-900 border border-slate-800 overflow-hidden">
+                                <div class="h-full bg-gradient-to-r from-accent-600 to-accent-400 rounded-full theme-trans" style="width:95%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-xs mb-1.5">
+                                <span class="text-slate-300 flex items-center gap-2"><i class="fa-solid fa-mobile-screen text-accent-400"></i> KineMaster</span>
+                                <span class="text-accent-400 font-mono">98%</span>
+                            </div>
+                            <div class="w-full h-2 rounded-full bg-slate-900 border border-slate-800 overflow-hidden">
+                                <div class="h-full bg-gradient-to-r from-accent-600 to-accent-400 rounded-full theme-trans" style="width:98%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-xs mb-1.5">
+                                <span class="text-slate-300 flex items-center gap-2"><i class="fa-solid fa-wand-magic-sparkles text-accent-400"></i> Motion Intros & Audio Sync</span>
+                                <span class="text-accent-400 font-mono">88%</span>
+                            </div>
+                            <div class="w-full h-2 rounded-full bg-slate-900 border border-slate-800 overflow-hidden">
+                                <div class="h-full bg-gradient-to-r from-accent-600 to-accent-400 rounded-full theme-trans" style="width:88%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Design & Branding -->
+                <div class="glass-card rounded-3xl p-6 flex flex-col gap-5">
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 rounded-2xl bg-slate-900 border border-slate-800 flex items-center justify-center text-accent-400 text-xl theme-trans">
+                            <i class="fa-solid fa-palette"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-white text-lg">Design & Branding</h3>
+                            <p class="text-[10px] text-slate-500 font-mono">Visual Identity · CTR</p>
+                        </div>
+                    </div>
+
+                    <div class="space-y-3">
+                        <div>
+                            <div class="flex justify-between text-xs mb-1.5">
+                                <span class="text-slate-300 flex items-center gap-2"><i class="fa-solid fa-pen-ruler text-accent-400"></i> Canva</span>
+                                <span class="text-accent-400 font-mono">92%</span>
+                            </div>
+                            <div class="w-full h-2 rounded-full bg-slate-900 border border-slate-800 overflow-hidden">
+                                <div class="h-full bg-gradient-to-r from-accent-600 to-accent-400 rounded-full theme-trans" style="width:92%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-xs mb-1.5">
+                                <span class="text-slate-300 flex items-center gap-2"><i class="fa-solid fa-mobile text-accent-400"></i> PixelLab</span>
+                                <span class="text-accent-400 font-mono">85%</span>
+                            </div>
+                            <div class="w-full h-2 rounded-full bg-slate-900 border border-slate-800 overflow-hidden">
+                                <div class="h-full bg-gradient-to-r from-accent-600 to-accent-400 rounded-full theme-trans" style="width:85%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-xs mb-1.5">
+                                <span class="text-slate-300 flex items-center gap-2"><i class="fa-solid fa-image text-accent-400"></i> Lunapic / Image Editing</span>
+                                <span class="text-accent-400 font-mono">80%</span>
+                            </div>
+                            <div class="w-full h-2 rounded-full bg-slate-900 border border-slate-800 overflow-hidden">
+                                <div class="h-full bg-gradient-to-r from-accent-600 to-accent-400 rounded-full theme-trans" style="width:80%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-xs mb-1.5">
+                                <span class="text-slate-300 flex items-center gap-2"><i class="fa-solid fa-id-card text-accent-400"></i> Logos, Banners & Thumbnails</span>
+                                <span class="text-accent-400 font-mono">90%</span>
+                            </div>
+                            <div class="w-full h-2 rounded-full bg-slate-900 border border-slate-800 overflow-hidden">
+                                <div class="h-full bg-gradient-to-r from-accent-600 to-accent-400 rounded-full theme-trans" style="width:90%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PAGE 4: PROJECTS -->
+        <div id="page-projects" class="page-view">
+            <div class="text-center max-w-2xl mx-auto mb-10">
+                <span class="text-xs font-mono text-accent-400 tracking-widest uppercase theme-trans">Portfolio</span>
+                <h2 class="text-3xl font-extrabold text-white mt-1">Featured Works</h2>
+                <div class="w-12 h-1 bg-accent-500 mx-auto mt-3 rounded-full theme-trans"></div>
+            </div>
+
+            <div class="flex flex-wrap justify-center gap-3 mb-8">
+                <button onclick="filterProjects('all')" class="filter-btn active px-5 py-2 rounded-xl text-xs font-bold bg-accent-500 text-slate-950 transition-all theme-trans">All Works</button>
+                <button onclick="filterProjects('tech')" class="filter-btn px-5 py-2 rounded-xl text-xs font-bold bg-slate-900 text-slate-300 border border-slate-800 transition-all theme-trans">Tech & Blockchain</button>
+                <button onclick="filterProjects('video')" class="filter-btn px-5 py-2 rounded-xl text-xs font-bold bg-slate-900 text-slate-300 border border-slate-800 transition-all theme-trans">Video Editing</button>
+                <button onclick="filterProjects('design')" class="filter-btn px-5 py-2 rounded-xl text-xs font-bold bg-slate-900 text-slate-300 border border-slate-800 transition-all theme-trans">Graphic Design</button>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="project-item tech glass-card rounded-3xl p-6 flex flex-col justify-between gap-4">
+                    <div class="flex flex-col gap-3">
+                        <div class="flex items-center justify-between">
+                            <span class="text-[10px] font-mono text-accent-400 px-2.5 py-1 rounded-md bg-slate-900 border border-slate-800 theme-trans">Tech Project</span>
+                            <i class="fa-solid fa-link text-slate-500"></i>
+                        </div>
+                        <h3 class="font-bold text-white text-lg">Blockchain Forensic Image Preservation Framework</h3>
+                        <p class="text-xs text-slate-300 leading-relaxed">
+                            A secure, scalable, and intelligent hybrid framework for classified forensic image preservation combining deep learning automation with decentralized blockchain immutability.
+                        </p>
+                        <!-- Project screenshots -->
+                        <div class="grid grid-cols-3 gap-2 pt-1">
+                            <a href="https://lh3.googleusercontent.com/d/1_K0d5bSjQEunOe4A3wYQnKRb-ZK0ISgV" target="_blank" rel="noopener noreferrer" class="block rounded-xl overflow-hidden border border-slate-800 hover:border-accent-500 transition-all aspect-video bg-slate-900">
+                                <img src="https://lh3.googleusercontent.com/d/1_K0d5bSjQEunOe4A3wYQnKRb-ZK0ISgV" alt="Blockchain project screenshot 1" class="w-full h-full object-cover hover:scale-105 transition-transform duration-300">
+                            </a>
+                            <a href="https://lh3.googleusercontent.com/d/169wItRfT-HeQRrlWoUeZTeU1lQNtM3T2" target="_blank" rel="noopener noreferrer" class="block rounded-xl overflow-hidden border border-slate-800 hover:border-accent-500 transition-all aspect-video bg-slate-900">
+                                <img src="https://lh3.googleusercontent.com/d/169wItRfT-HeQRrlWoUeZTeU1lQNtM3T2" alt="Blockchain project screenshot 2" class="w-full h-full object-cover hover:scale-105 transition-transform duration-300">
+                            </a>
+                            <a href="https://lh3.googleusercontent.com/d/1Z3duAT4D_PRq75mT56INjROvVLbRl9rO" target="_blank" rel="noopener noreferrer" class="block rounded-xl overflow-hidden border border-slate-800 hover:border-accent-500 transition-all aspect-video bg-slate-900">
+                                <img src="https://lh3.googleusercontent.com/d/1Z3duAT4D_PRq75mT56INjROvVLbRl9rO" alt="Blockchain project screenshot 3" class="w-full h-full object-cover hover:scale-105 transition-transform duration-300">
+                            </a>
+                        </div>
+                    </div>
+                    <button onclick="openModal('Blockchain Forensic Image Preservation Framework', 'A specialized forensic framework designed to preserve image evidence safely. Integrates deep learning models for classification with immutable smart contracts via Python and blockchain protocols to ensure evidence integrity.')" class="w-full py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-xs font-semibold text-accent-400 transition-all flex items-center justify-center gap-2 theme-trans">
+                        <span>Read Case Study</span>
+                        <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                    </button>
+                </div>
+
+                <div class="project-item video glass-card rounded-3xl p-6 flex flex-col justify-between gap-4">
+                    <div class="flex flex-col gap-3">
+                        <div class="flex items-center justify-between">
+                            <span class="text-[10px] font-mono text-accent-400 px-2.5 py-1 rounded-md bg-slate-900 border border-slate-800 theme-trans">5+ Years Experience</span>
+                            <a href="https://www.youtube.com/@infamegamin" target="_blank" rel="noopener noreferrer" class="text-slate-500 hover:text-red-500 transition-colors" title="YouTube Channel">
+                                <i class="fa-brands fa-youtube"></i>
+                            </a>
+                        </div>
+                        <h3 class="font-bold text-white text-lg">Video Post-Production & Motion Intros</h3>
+                        <p class="text-xs text-slate-300 leading-relaxed">
+                            Comprehensive video editing experience evolving from KineMaster to Filmora 9 and Adobe Premiere Pro, creating dynamic motion intros and balanced audio mixes for the <a href="https://www.youtube.com/@infamegamin" target="_blank" rel="noopener noreferrer" class="text-accent-400 hover:underline">INFAME GAMIN</a> channel.
+                        </p>
+                        <!-- YouTube thumbnails from channel -->
+                        <div class="grid grid-cols-3 gap-2 pt-1">
+                            <a href="https://www.youtube.com/watch?v=yUGUw0t9Y7k" target="_blank" rel="noopener noreferrer" class="block rounded-xl overflow-hidden border border-slate-800 hover:border-accent-500 transition-all aspect-video bg-slate-900 relative group">
+                                <img src="https://i.ytimg.com/vi/yUGUw0t9Y7k/hqdefault.jpg" alt="Doomfist edit" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                                <div class="absolute inset-0 flex items-center justify-center bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <i class="fa-solid fa-play text-white text-lg"></i>
+                                </div>
+                            </a>
+                            <a href="https://www.youtube.com/watch?v=IYvlt1fh1d4" target="_blank" rel="noopener noreferrer" class="block rounded-xl overflow-hidden border border-slate-800 hover:border-accent-500 transition-all aspect-video bg-slate-900 relative group">
+                                <img src="https://i.ytimg.com/vi/IYvlt1fh1d4/hqdefault.jpg" alt="Mongoose highlights" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                                <div class="absolute inset-0 flex items-center justify-center bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <i class="fa-solid fa-play text-white text-lg"></i>
+                                </div>
+                            </a>
+                            <a href="https://www.youtube.com/shorts/5Xgs80aATS0" target="_blank" rel="noopener noreferrer" class="block rounded-xl overflow-hidden border border-slate-800 hover:border-accent-500 transition-all aspect-video bg-slate-900 relative group">
+                                <img src="https://i.ytimg.com/vi/5Xgs80aATS0/hqdefault.jpg" alt="Mecha Break highlights" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                                <div class="absolute inset-0 flex items-center justify-center bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <i class="fa-solid fa-play text-white text-lg"></i>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="openModal('Video Post-Production & Motion Intros', 'Over 5 years of video editing history across mobile and desktop suites. Specializes in color correction, audio mastering, custom logo intros, fast cuts, and high-energy transitions for gaming content on the INFAME GAMIN YouTube channel.')" class="flex-1 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-xs font-semibold text-accent-400 transition-all flex items-center justify-center gap-2 theme-trans">
+                            <span>Case Study</span>
+                            <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                        </button>
+                        <a href="https://www.youtube.com/@infamegamin" target="_blank" rel="noopener noreferrer" class="px-4 py-2.5 rounded-xl bg-red-600/90 hover:bg-red-500 text-white text-xs font-semibold transition-all flex items-center justify-center gap-2">
+                            <i class="fa-brands fa-youtube"></i>
+                            <span>Channel</span>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="project-item design glass-card rounded-3xl p-6 flex flex-col justify-between gap-4">
+                    <div class="flex flex-col gap-3">
+                        <div class="flex items-center justify-between">
+                            <span class="text-[10px] font-mono text-accent-400 px-2.5 py-1 rounded-md bg-slate-900 border border-slate-800 theme-trans">Branding</span>
+                            <i class="fa-solid fa-paint-brush text-slate-500"></i>
+                        </div>
+                        <h3 class="font-bold text-white text-lg">Thumbnail & Channel Branding Suite</h3>
+                        <p class="text-xs text-slate-300 leading-relaxed">
+                            Created click-optimized thumbnails, channel banners, and vector logos for <a href="https://www.youtube.com/@infamegamin" target="_blank" rel="noopener noreferrer" class="text-accent-400 hover:underline">INFAME GAMIN</a> using Canva, PixelLab, and Lunapic.
+                        </p>
+                        <!-- Channel logo + banner -->
+                        <div class="flex flex-col gap-2 pt-1">
+                            <a href="https://www.youtube.com/@infamegamin" target="_blank" rel="noopener noreferrer" class="block rounded-xl overflow-hidden border border-slate-800 hover:border-accent-500 transition-all bg-slate-900 relative group">
+                                <img src="https://yt3.googleusercontent.com/fOk8b1o1CvRgXFYcXZB_81frfEac1NEuKBMg2rjBk-Acd-Kfed9JDQOf3O_80PFsgRHcLyLv=w1707-fcrop64=1,00005a57ffffa5a8-k-c0xffffffff-no-nd-rj" alt="INFAME GAMIN channel banner" class="w-full h-20 sm:h-24 object-cover group-hover:scale-[1.02] transition-transform duration-300">
+                            </a>
+                            <div class="flex items-center gap-3">
+                                <a href="https://www.youtube.com/@infamegamin" target="_blank" rel="noopener noreferrer" class="shrink-0 w-14 h-14 rounded-full overflow-hidden border-2 border-slate-700 hover:border-accent-500 transition-all">
+                                    <img src="https://yt3.googleusercontent.com/KHrLZgMO-jP3BChxzsvOAFukglh_qWYEFtBtXC7DQPEjUriQJ37qn2iQL2ywfZJJvmoOr6plvu0=s900-c-k-c0x00ffffff-no-rj" alt="INFAME GAMIN logo" class="w-full h-full object-cover">
+                                </a>
+                                <div class="min-w-0">
+                                    <p class="text-xs font-bold text-white truncate">INFAME GAMIN</p>
+                                    <p class="text-[10px] text-slate-500 font-mono">Channel logo & banner</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <button onclick="openModal('Thumbnail & Channel Branding Suite', 'Designing visual branding assets including logos, avatars, banners, and CTR-focused thumbnails for the INFAME GAMIN YouTube channel using Canva, PixelLab, and image processing tools.')" class="w-full py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-xs font-semibold text-accent-400 transition-all flex items-center justify-center gap-2 theme-trans">
+                        <span>Read Case Study</span>
+                        <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                    </button>
+                </div>
+
+                <div class="project-item tech glass-card rounded-3xl p-6 flex flex-col justify-between gap-4">
+                    <div class="flex flex-col gap-3">
+                        <div class="flex items-center justify-between">
+                            <span class="text-[10px] font-mono text-accent-400 px-2.5 py-1 rounded-md bg-slate-900 border border-slate-800 theme-trans">Web Design</span>
+                            <i class="fa-solid fa-code text-slate-500"></i>
+                        </div>
+                        <h3 class="font-bold text-white text-lg">Responsive Portfolios & Interactive Web Apps</h3>
+                        <p class="text-xs text-slate-300 leading-relaxed">
+                            Building responsive web applications featuring glassmorphism design, client-side interactions, and custom JS mechanics.
+                        </p>
+                    </div>
+                    <button onclick="openModal('Responsive Portfolios & Interactive Web Apps', 'Designed and built modern single-page and multi-page web applications focused on fast load times, mobile responsiveness, glassmorphism aesthetics, and clean UI.')" class="w-full py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-xs font-semibold text-accent-400 transition-all flex items-center justify-center gap-2 theme-trans">
+                        <span>Read Case Study</span>
+                        <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- PAGE 5: CV / RESUME -->
+        <div id="page-resume" class="page-view">
+            <div class="flex flex-col gap-6">
+                
+                <!-- Header + Download -->
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800/80 pb-6 theme-trans no-print">
+                    <div>
+                        <span class="text-xs font-mono text-accent-400 tracking-widest uppercase theme-trans">Curriculum Vitae</span>
+                        <h2 class="text-3xl font-extrabold text-white mt-1">Resume / CV</h2>
+                    </div>
+                    <a href="https://drive.google.com/uc?export=download&id=173PnmxpRzDBUm1uN1sCn0JRFDXq9Q2jz" 
+                       target="_blank" rel="noopener noreferrer"
+                       class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-accent-600 to-accent-500 text-slate-950 font-bold text-xs uppercase tracking-wider shadow-lg shadow-accent-500/20 hover:scale-105 transition-all flex items-center gap-2 theme-trans w-fit">
+                        <i class="fa-solid fa-download text-sm"></i>
+                        <span>Download PDF</span>
+                    </a>
+                </div>
+
+                <!-- Readable CV Content -->
+                <div class="glass-card rounded-3xl p-6 sm:p-10 flex flex-col gap-8">
+
+                    <!-- Name & Contact -->
+                    <div class="text-center sm:text-left border-b border-slate-800/80 pb-6">
+                        <h3 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">Anisur Rahman Noyon Sarker</h3>
+                        <div class="mt-3 flex flex-wrap justify-center sm:justify-start gap-x-4 gap-y-2 text-xs text-slate-400 font-mono">
+                            <span class="flex items-center gap-1.5"><i class="fa-solid fa-phone text-accent-400"></i> +880-1886614411</span>
+                            <span class="flex items-center gap-1.5"><i class="fa-solid fa-envelope text-accent-400"></i> anisurrahmannoyon19072@gmail.com</span>
+                            <span class="flex items-center gap-1.5"><i class="fa-solid fa-location-dot text-accent-400"></i> Dhaka, Bangladesh</span>
+                        </div>
+                        <div class="mt-3 flex flex-wrap justify-center sm:justify-start gap-3 text-xs">
+                            <a href="https://www.linkedin.com/in/anisur-rahman-noyon-sarker-4254803bb" target="_blank" rel="noopener noreferrer" class="text-accent-400 hover:underline">LinkedIn</a>
+                            <span class="text-slate-600">•</span>
+                            <a href="https://github.com/AnisurRahmanNoyon" target="_blank" rel="noopener noreferrer" class="text-accent-400 hover:underline">GitHub</a>
+                            <span class="text-slate-600">•</span>
+                            <a href="https://www.youtube.com/@infamegamin" target="_blank" rel="noopener noreferrer" class="text-accent-400 hover:underline">YouTube</a>
+                        </div>
+                    </div>
+
+                    <!-- Professional Summary -->
+                    <div>
+                        <h4 class="text-xs font-mono text-accent-400 tracking-widest uppercase mb-3 theme-trans">Professional Summary</h4>
+                        <p class="text-sm text-slate-300 leading-relaxed">
+                            Versatile Computer Science graduate and multimedia creator combining technical expertise in Python and blockchain with <strong class="text-white">5+ years of experience</strong> in video editing and graphic design. Adept at bridging technical software development with creative digital storytelling and cross-cultural communication.
+                        </p>
+                    </div>
+
+                    <!-- Education -->
+                    <div>
+                        <h4 class="text-xs font-mono text-accent-400 tracking-widest uppercase mb-3 theme-trans">Education</h4>
+                        <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-1">
+                            <div>
+                                <p class="text-sm font-bold text-white">Daffodil International University</p>
+                                <p class="text-xs text-slate-400 mt-0.5">BSc in Computer Science and Engineering</p>
+                            </div>
+                            <span class="text-xs font-mono text-accent-400 theme-trans shrink-0">2026</span>
+                        </div>
+                    </div>
+
+                    <!-- Projects -->
+                    <div>
+                        <h4 class="text-xs font-mono text-accent-400 tracking-widest uppercase mb-4 theme-trans">Projects</h4>
+                        <div class="flex flex-col gap-5">
+                            <div>
+                                <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-1">
+                                    <p class="text-sm font-bold text-white">Blockchain Forensic Image Preservation Framework (FYDP)</p>
+                                    <span class="text-xs font-mono text-slate-500 shrink-0">2026</span>
+                                </div>
+                                <p class="text-xs text-slate-400 mt-1.5 leading-relaxed">
+                                    Designed a secure, tamper-proof system for classified forensic images utilizing Python and decentralized blockchain protocols.
+                                </p>
+                            </div>
+                            <div>
+                                <p class="text-sm font-bold text-white">Web Design & Development</p>
+                                <p class="text-xs text-slate-400 mt-1.5 leading-relaxed">
+                                    Built and deployed custom websites focusing on clean front-end layouts and responsive user experiences.
+                                </p>
+                            </div>
+                            <div>
+                                <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-1">
+                                    <p class="text-sm font-bold text-white">Multimedia Creator & Editor</p>
+                                    <span class="text-xs font-mono text-slate-500 shrink-0">2020 – 2025</span>
+                                </div>
+                                <ul class="text-xs text-slate-400 mt-1.5 leading-relaxed space-y-1 list-disc list-inside">
+                                    <li>Produced and edited high-engagement gaming content, scaling skills from mobile editing (KineMaster) to desktop suites (Filmora 9, Adobe Premiere Pro) with custom motion intros.</li>
+                                    <li>Conceptualized and designed branding assets (logos, banners, thumbnails) using Canva, Lunapic, and PixelLab; managed an end-to-end digital publishing workflow via personal YouTube channel.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Technical Skills -->
+                    <div>
+                        <h4 class="text-xs font-mono text-accent-400 tracking-widest uppercase mb-3 theme-trans">Technical Skills</h4>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                            <div class="p-4 rounded-2xl bg-slate-900/60 border border-slate-800/80">
+                                <p class="text-[10px] font-mono text-accent-400 uppercase tracking-wider mb-2">Programming & Tech</p>
+                                <p class="text-xs text-slate-300">Python, Blockchain (Smart Contracts), Web Development</p>
+                            </div>
+                            <div class="p-4 rounded-2xl bg-slate-900/60 border border-slate-800/80">
+                                <p class="text-[10px] font-mono text-accent-400 uppercase tracking-wider mb-2">Video & Motion</p>
+                                <p class="text-xs text-slate-300">Adobe Premiere Pro, Filmora 9, KineMaster, Motion Graphics & Custom Intros</p>
+                            </div>
+                            <div class="p-4 rounded-2xl bg-slate-900/60 border border-slate-800/80">
+                                <p class="text-[10px] font-mono text-accent-400 uppercase tracking-wider mb-2">Design & Branding</p>
+                                <p class="text-xs text-slate-300">Canva, PixelLab, Lunapic, Logo Design, YouTube Banners & Thumbnails</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Download fallback note -->
+                <p class="text-center text-xs text-slate-500 font-mono no-print">
+                    Prefer the original PDF? <a href="https://drive.google.com/uc?export=download&id=173PnmxpRzDBUm1uN1sCn0JRFDXq9Q2jz" target="_blank" rel="noopener noreferrer" class="text-accent-400 hover:underline">Download CV</a>
+                </p>
+            </div>
+        </div>
+
+        <!-- PAGE 6: LANGUAGES -->
+        <div id="page-languages" class="page-view">
+            <div class="text-center max-w-2xl mx-auto mb-12">
+                <span class="text-xs font-mono text-accent-400 tracking-widest uppercase theme-trans">Communication</span>
+                <h2 class="text-3xl font-extrabold text-white mt-1">Language Proficiency</h2>
+                <div class="w-12 h-1 bg-accent-500 mx-auto mt-3 rounded-full theme-trans"></div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="glass-card rounded-3xl p-6 flex flex-col gap-4">
+                    <div class="flex justify-between items-center text-base font-bold text-white">
+                        <span>Bengali</span>
+                        <span class="text-xs font-mono text-accent-400 theme-trans">Native</span>
+                    </div>
+                    <div class="w-full h-3 rounded-full bg-slate-900 overflow-hidden p-0.5 border border-slate-800 theme-trans">
+                        <div class="h-full bg-gradient-to-r from-accent-600 to-accent-400 rounded-full w-full theme-trans"></div>
+                    </div>
+                    <p class="text-xs text-slate-400 leading-relaxed">Native language proficiency in speaking, reading, and formal writing.</p>
+                </div>
+
+                <div class="glass-card rounded-3xl p-6 flex flex-col gap-4">
+                    <div class="flex justify-between items-center text-base font-bold text-white">
+                        <span>English</span>
+                        <span class="text-xs font-mono text-accent-400 theme-trans">Professional</span>
+                    </div>
+                    <div class="w-full h-3 rounded-full bg-slate-900 overflow-hidden p-0.5 border border-slate-800 theme-trans">
+                        <div class="h-full bg-gradient-to-r from-accent-600 to-accent-400 rounded-full w-[88%] theme-trans"></div>
+                    </div>
+                    <p class="text-xs text-slate-400 leading-relaxed">Professional working proficiency for technical documentation and client communication.</p>
+                </div>
+
+                <div class="glass-card rounded-3xl p-6 flex flex-col gap-4">
+                    <div class="flex justify-between items-center text-base font-bold text-white">
+                        <span>Japanese</span>
+                        <span class="text-xs font-mono text-accent-400 theme-trans">Conversational</span>
+                    </div>
+                    <div class="w-full h-3 rounded-full bg-slate-900 overflow-hidden p-0.5 border border-slate-800 theme-trans">
+                        <div class="h-full bg-gradient-to-r from-accent-600 to-accent-400 rounded-full w-[65%] theme-trans"></div>
+                    </div>
+                    <p class="text-xs text-slate-400 leading-relaxed">Conversational spoken Japanese skills for workplace interactions.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- PAGE 7: CONTACT -->
+        <div id="page-contact" class="page-view">
+            <div class="text-center max-w-2xl mx-auto mb-12">
+                <span class="text-xs font-mono text-accent-400 tracking-widest uppercase theme-trans">Reach Out</span>
+                <h2 class="text-3xl font-extrabold text-white mt-1">Get In Touch</h2>
+                <div class="w-12 h-1 bg-accent-500 mx-auto mt-3 rounded-full theme-trans"></div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                <div class="lg:col-span-5 flex flex-col gap-4">
+                    <div onclick="copyText('+8801886614411')" class="glass-card rounded-2xl p-5 flex items-center gap-4 cursor-pointer group">
+                        <div class="w-12 h-12 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-center text-accent-400 text-lg group-hover:scale-110 transition-transform theme-trans">
+                            <i class="fa-solid fa-phone"></i>
+                        </div>
+                        <div>
+                            <span class="text-[10px] font-mono text-slate-400 uppercase tracking-wider">Phone (Click to Copy)</span>
+                            <h4 class="text-sm font-bold text-white group-hover:text-accent-400 transition-colors theme-trans">+8801886614411</h4>
+                        </div>
+                    </div>
+
+                    <div onclick="copyText('anisurrahmannoyon19072@gmail.com')" class="glass-card rounded-2xl p-5 flex items-center gap-4 cursor-pointer group">
+                        <div class="w-12 h-12 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-center text-accent-400 text-lg group-hover:scale-110 transition-transform theme-trans">
+                            <i class="fa-solid fa-envelope"></i>
+                        </div>
+                        <div>
+                            <span class="text-[10px] font-mono text-slate-400 uppercase tracking-wider">Email (Click to Copy)</span>
+                            <h4 class="text-sm font-bold text-white group-hover:text-accent-400 transition-colors theme-trans">anisurrahmannoyon19072@gmail.com</h4>
+                        </div>
+                    </div>
+
+                    <div class="glass-card rounded-2xl p-5 flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-center text-accent-400 text-lg theme-trans">
+                            <i class="fa-solid fa-location-dot"></i>
+                        </div>
+                        <div>
+                            <span class="text-[10px] font-mono text-slate-400 uppercase tracking-wider">Location</span>
+                            <h4 class="text-sm font-bold text-white">Dhaka Division, Bangladesh</h4>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-7">
+                    <form id="contact-form" onsubmit="handleForm(event)" class="glass-card rounded-3xl p-8 flex flex-col gap-4">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div class="flex flex-col gap-1">
+                                <label class="text-xs font-mono text-slate-300">Name</label>
+                                <input type="text" name="name" required placeholder="Your Name" class="px-4 py-3 rounded-xl bg-slate-950 border border-slate-800 text-slate-100 text-xs focus:outline-none focus:border-accent-500 transition-colors theme-trans">
+                            </div>
+                            <div class="flex flex-col gap-1">
+                                <label class="text-xs font-mono text-slate-300">Email</label>
+                                <input type="email" name="email" required placeholder="your@email.com" class="px-4 py-3 rounded-xl bg-slate-950 border border-slate-800 text-slate-100 text-xs focus:outline-none focus:border-accent-500 transition-colors theme-trans">
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col gap-1">
+                            <label class="text-xs font-mono text-slate-300">Message</label>
+                            <textarea name="message" rows="4" required placeholder="Write your message here..." class="px-4 py-3 rounded-xl bg-slate-950 border border-slate-800 text-slate-100 text-xs focus:outline-none focus:border-accent-500 transition-colors resize-none theme-trans"></textarea>
+                        </div>
+
+                        <button type="submit" id="contact-submit-btn" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-accent-600 to-accent-500 text-slate-950 font-bold text-xs uppercase tracking-wider hover:opacity-90 transition-all flex items-center justify-center gap-2 theme-trans">
+                            <span>Send Message</span>
+                            <i class="fa-solid fa-paper-plane text-xs"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="py-8 bg-slate-950 border-t border-slate-900 text-center text-xs text-slate-500 font-mono relative z-10 no-print theme-trans">
+        <p>© 2026 Anisur Rahman Noyon Sarker. All rights reserved.</p>
+    </footer>
+
+    <!-- Modal Popup -->
+    <div id="modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md hidden opacity-0 transition-opacity duration-300 no-print">
+        <div class="glass-card w-full max-w-lg p-6 rounded-3xl flex flex-col gap-4">
+            <div class="flex justify-between items-center border-b border-slate-800 pb-3 theme-trans">
+                <h3 id="modal-title" class="text-base font-bold text-white"></h3>
+                <button onclick="closeModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <p id="modal-desc" class="text-xs text-slate-300 leading-relaxed"></p>
+            <div class="flex justify-end pt-2">
+                <button onclick="closeModal()" class="px-5 py-2 rounded-xl bg-accent-500 text-slate-950 font-bold text-xs theme-trans">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Logic -->
+    <script>
+        const state = {
+            activeTab: 'home',
+            currentTheme: localStorage.getItem('noyon_portfolio_theme') || 'cyberpunk',
+            projectFilter: 'all',
+            isSwitching: false
+        };
+
+        const mobileToggle = document.getElementById('mobile-toggle');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const themeBtn = document.getElementById('theme-btn');
+        const themeMenu = document.getElementById('theme-menu');
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initCanvas();
+            setTheme(state.currentTheme);
+            initParallaxCard();
+        });
+
+        // Fixed 3D Parallax Mouse Hover Tilt Effect for Profile Card
+        function initParallaxCard() {
+            const card = document.getElementById('parallax-card');
+            if (!card) return;
+
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                const rotateX = ((y - centerY) / centerY) * -12;
+                const rotateY = ((x - centerX) / centerX) * 12;
+
+                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-6px) scale(1.02)`;
+            });
+
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0px) scale(1)';
+            });
+        }
+
+        // Scroll to About section (Home + About are now one continuous page)
+        function scrollToAbout() {
+            // Make sure we are on the home page first
+            if (state.activeTab !== 'home') {
+                switchPage('home');
+                // Wait for page switch animation, then scroll
+                setTimeout(() => {
+                    const el = document.getElementById('about-section');
+                    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 200);
+            } else {
+                const el = document.getElementById('about-section');
+                if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+            // Highlight About nav
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active-nav'));
+            const aboutNav = document.getElementById('nav-about');
+            if (aboutNav) aboutNav.classList.add('active-nav');
+            closeMobileMenu();
+        }
+
+        // Optimized Smooth Section Switcher with Replaying Animations
+        function switchPage(pageId) {
+            if (state.activeTab === pageId || state.isSwitching) {
+                closeMobileMenu();
+                return;
+            }
+            
+            const currentPage = document.getElementById(`page-${state.activeTab}`);
+            const nextPage = document.getElementById(`page-${pageId}`);
+            
+            if (currentPage && nextPage) {
+                state.isSwitching = true;
+
+                // Update active tab styling
+                document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active-nav'));
+                const targetNav = document.getElementById(`nav-${pageId}`);
+                if (targetNav) targetNav.classList.add('active-nav');
+
+                // Gracefully hide current section
+                currentPage.classList.remove('page-visible');
+
+                setTimeout(() => {
+                    currentPage.classList.remove('active-page');
+                    state.activeTab = pageId;
+
+                    // Display next section and trigger its unique keyframe animation
+                    nextPage.classList.add('active-page');
+                    void nextPage.offsetWidth; // Force Reflow to restart keyframe animations cleanly
+                    nextPage.classList.add('page-visible');
+                    
+                    // Re-initialize 3D tilt tracking if landing on home
+                    if (pageId === 'home') {
+                        initParallaxCard();
+                    }
+
+                    state.isSwitching = false;
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }, 140);
+            }
+
+            closeMobileMenu();
+        }
+
+        if (mobileToggle) {
+            mobileToggle.addEventListener('click', (e) => {
+                e.stopPropagation();
+                toggleMobileMenu();
+            });
+        }
+
+        function toggleMobileMenu() {
+            if (!mobileMenu) return;
+            const isOpen = mobileMenu.classList.contains('menu-open');
+            if (isOpen) {
+                closeMobileMenu();
+            } else {
+                mobileMenu.classList.add('menu-open');
+                mobileMenu.classList.remove('py-0');
+                mobileMenu.classList.add('py-4');
+            }
+        }
+
+        function closeMobileMenu() {
+            if (!mobileMenu) return;
+            mobileMenu.classList.remove('menu-open');
+            setTimeout(() => {
+                if (!mobileMenu.classList.contains('menu-open')) {
+                    mobileMenu.classList.remove('py-4');
+                    mobileMenu.classList.add('py-0');
+                }
+            }, 350);
+        }
+
+        /* Interactive Canvas Logic (Responds to Global Mouse) */
+        const canvas = document.getElementById('bg-canvas');
+        const ctx = canvas.getContext('2d');
+        let width, height;
+        let particles = [];
+        let mouse = { x: null, y: null, radius: 150 };
+
+        function initCanvas() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+            const particleCount = Math.floor((width * height) / 14000);
+            particles = [];
+            
+            for (let i = 0; i < particleCount; i++) {
+                particles.push({
+                    x: Math.random() * width,
+                    y: Math.random() * height,
+                    vx: (Math.random() - 0.5) * 0.8,
+                    vy: (Math.random() - 0.5) * 0.8,
+                    size: Math.random() * 2 + 1,
+                    pulse: Math.random() * Math.PI
+                });
+            }
+            renderCanvas();
+        }
+
+        function getAccentRGB() {
+            const style = getComputedStyle(document.documentElement);
+            const rgbStr = style.getPropertyValue('--accent-rgb').trim();
+            return rgbStr || '6, 182, 212';
+        }
+
+        function renderCanvas() {
+            ctx.clearRect(0, 0, width, height);
+            const rgb = getAccentRGB();
+
+            for (let i = 0; i < particles.length; i++) {
+                let p = particles[i];
+                p.x += p.vx;
+                p.y += p.vy;
+
+                if (p.x < 0 || p.x > width) p.vx *= -1;
+                if (p.y < 0 || p.y > height) p.vy *= -1;
+
+                // Mouse Magnet & Repulsion Physics
+                if (mouse.x !== null && mouse.y !== null) {
+                    let dx = mouse.x - p.x;
+                    let dy = mouse.y - p.y;
+                    let dist = Math.sqrt(dx * dx + dy * dy);
+                    if (dist < mouse.radius) {
+                        let angle = Math.atan2(dy, dx);
+                        let force = (mouse.radius - dist) / mouse.radius;
+                        p.x -= Math.cos(angle) * force * 3;
+                        p.y -= Math.sin(angle) * force * 3;
+                    }
+                }
+
+                p.pulse += 0.03;
+                let currentSize = p.size + Math.sin(p.pulse) * 0.5;
+
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, currentSize, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(${rgb}, 0.7)`;
+                ctx.fill();
+
+                for (let j = i + 1; j < particles.length; j++) {
+                    let p2 = particles[j];
+                    let dx = p.x - p2.x;
+                    let dy = p.y - p2.y;
+                    let dist = Math.sqrt(dx * dx + dy * dy);
+
+                    if (dist < 110) {
+                        let alpha = (1 - dist / 110) * 0.22;
+                        ctx.beginPath();
+                        ctx.moveTo(p.x, p.y);
+                        ctx.lineTo(p2.x, p2.y);
+                        ctx.strokeStyle = `rgba(${rgb}, ${alpha})`;
+                        ctx.lineWidth = 0.8;
+                        ctx.stroke();
+                    }
+                }
+            }
+            requestAnimationFrame(renderCanvas);
+        }
+
+        window.addEventListener('mousemove', (e) => {
+            mouse.x = e.clientX;
+            mouse.y = e.clientY;
+        });
+
+        window.addEventListener('mouseleave', () => {
+            mouse.x = null;
+            mouse.y = null;
+        });
+
+        window.addEventListener('resize', initCanvas);
+
+        if (themeBtn) {
+            themeBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (themeMenu) themeMenu.classList.toggle('hidden');
+            });
+        }
+
+        document.addEventListener('click', () => {
+            if (themeMenu) themeMenu.classList.add('hidden');
+        });
+
+        function setTheme(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+            localStorage.setItem('noyon_portfolio_theme', theme);
+        }
+
+        function copyText(text) {
+            const el = document.createElement('textarea');
+            el.value = text;
+            document.body.appendChild(el);
+            el.select();
+            document.execCommand('copy');
+            document.body.removeChild(el);
+            showToast('Copied to clipboard!');
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-msg').innerText = msg;
+            toast.classList.remove('translate-y-12', 'opacity-0', 'pointer-events-none');
+            setTimeout(() => {
+                toast.classList.add('translate-y-12', 'opacity-0', 'pointer-events-none');
+            }, 3000);
+        }
+
+        function filterProjects(cat) {
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('bg-accent-500', 'text-slate-950');
+                btn.classList.add('bg-slate-900', 'text-slate-300');
+            });
+            if (event && event.target) {
+                event.target.classList.remove('bg-slate-900', 'text-slate-300');
+                event.target.classList.add('bg-accent-500', 'text-slate-950');
+            }
+
+            document.querySelectorAll('.project-item').forEach(item => {
+                if (cat === 'all' || item.classList.contains(cat)) {
+                    item.style.display = 'flex';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+
+        function openModal(title, desc) {
+            document.getElementById('modal-title').innerText = title;
+            document.getElementById('modal-desc').innerText = desc;
+            const modal = document.getElementById('modal');
+            modal.classList.remove('hidden');
+            setTimeout(() => modal.classList.remove('opacity-0'), 10);
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('modal');
+            modal.classList.add('opacity-0');
+            setTimeout(() => modal.classList.add('hidden'), 300);
+        }
+
+        async function handleForm(e) {
+            e.preventDefault();
+            const form = e.target;
+            const btn = document.getElementById('contact-submit-btn');
+            const originalHTML = btn.innerHTML;
+
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-xs"></i><span>Sending...</span>';
+
+            try {
+                const response = await fetch('https://formspree.io/f/mqpplnkq', {
+                    method: 'POST',
+                    body: new FormData(form),
+                    headers: { 'Accept': 'application/json' }
+                });
+
+                if (response.ok) {
+                    showToast('Message sent successfully!');
+                    form.reset();
+                } else {
+                    showToast('Something went wrong. Please try again.');
+                }
+            } catch (err) {
+                showToast('Network error. Please try again.');
+            }
+
+            btn.disabled = false;
+            btn.innerHTML = originalHTML;
+        }
+    </script>
+</body>
+</html>
